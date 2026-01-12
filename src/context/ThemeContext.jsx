@@ -12,7 +12,11 @@ export const useTheme = () => {
 export const ThemeProvider = ({ children }) => {
     const [isDark, setIsDark] = useState(() => {
         const saved = localStorage.getItem('theme');
-        return saved === 'dark';
+        if (saved) {
+            return saved === 'dark';
+        }
+        // Check system preference if no saved theme
+        return window.matchMedia('(prefers-color-scheme: dark)').matches;
     });
 
     useEffect(() => {

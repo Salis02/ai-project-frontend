@@ -25,18 +25,23 @@ const Toast = ({ message, type = 'info', onClose, duration }) => {
     };
 
     return (
-        <div className={`${bgColors[type]} border rounded-lg p-4 shadow-lg flex items-start gap-3 animate-slide-in`}>
+        <div
+            className={`${bgColors[type]} border rounded-lg p-4 shadow-lg flex items-start gap-3 
+                       animate-slide-in transition-all duration-300`}
+            role="alert"
+        >
             {icons[type]}
-            <p className="flex-1 text-sm text-gray-800 dark:text-gray-200">{message}</p>
+            <p className="flex-1 text-sm font-medium text-gray-900 dark:text-gray-100">{message}</p>
             <button
                 type="button"
                 aria-label="Close toast"
                 onClick={onClose}
-                className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 transition-colors"
+                className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 
+                         transition-colors rounded-md hover:bg-gray-200 dark:hover:bg-gray-700 p-1"
             >
                 <X className="w-4 h-4" />
             </button>
-        </div >
+        </div>
     );
 };
 
