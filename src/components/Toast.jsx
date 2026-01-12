@@ -1,8 +1,8 @@
 // src/components/Toast.jsx
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { CheckCircle, XCircle, AlertCircle, X } from 'lucide-react';
 
-const Toast = ({ message, type = 'info', onClose, duration = 3000 }) => {
+const Toast = ({ message, type = 'info', onClose, duration }) => {
     useEffect(() => {
         if (duration) {
             const timer = setTimeout(onClose, duration);
@@ -29,12 +29,14 @@ const Toast = ({ message, type = 'info', onClose, duration = 3000 }) => {
             {icons[type]}
             <p className="flex-1 text-sm text-gray-800 dark:text-gray-200">{message}</p>
             <button
+                type="button"
+                aria-label="Close toast"
                 onClick={onClose}
-                className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+                className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 transition-colors"
             >
                 <X className="w-4 h-4" />
             </button>
-        </div>
+        </div >
     );
 };
 
