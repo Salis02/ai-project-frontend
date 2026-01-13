@@ -14,21 +14,43 @@ function App() {
   const { showToast } = useToast();
 
   const handleAnalyze = async () => {
-    if (!text.trim()) {
-      showToast('Mohon masukkan teks terlebih dahulu', 'warning');
-      return;
-    }
-
     setLoading(true);
     setResult(null);
+    let accumulatedText = "";
 
     try {
-      const res = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/analyze`, { text });
-      setResult(res.data);
-      showToast('Analisis berhasil!', 'success');
+      const response = await fetch('http://localhost:5000/api/analyze', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text }),
+      });
+
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder();
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        const chunk = decoder.decode(value);
+        const lines = chunk.split('\n');
+
+        lines.forEach(line => {
+          if (line.startsWith('data: ')) {
+            const data = JSON.parse(line.substring(6));
+            if (data.chunk) {
+              accumulatedText += data.chunk;
+              // Simpan sementara ke state agar user melihat "ketikan" AI
+              setResult({ result: { summary: accumulatedText + "..." } });
+            }
+            if (data.done) {
+              setResult({ result: data.final }); // Set hasil final yang rapi
+            }
+          }
+        });
+      }
     } catch (err) {
-      console.error(err);
-      showToast('Gagal koneksi ke Backend/AI. Silakan coba lagi.', 'error');
+      showToast.error('Terjadi kesalahan saat menganalisis. Silakan coba lagi.');
     } finally {
       setLoading(false);
     }
